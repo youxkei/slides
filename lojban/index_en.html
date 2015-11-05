@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
 
-        <title>人工言語ロジバン</title>
+        <title>Lojban, the Cunstructed Language</title>
 
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -38,7 +38,8 @@
             <div class="slides">
                 <section data-markdown data-separator="^\n---">
                     <script type="text/template">
-# 人工言語ロジバン
+# Lojban
+## The Constructed Language
 
 ---
 <img width="15%" data-src="img/youxkei.png">
@@ -46,41 +47,41 @@
 * s1200230
 * Twitter: [@youxkei](https://twitter.com/youxkei)
 * Github: [youxkei](https://github.com/youxkei)
-* 最近やってること
+* Recent activities
     * Haskell
     * React
-    * ロジバン
-    * 東方紺珠伝LunaticRTA
+    * Lojban
+    * Legacy of the Lunatic Kingdom Speedrun
 
 ---
-## 注意
+## Attention
 
 ---
-## 任意のタイミングで質問OK
+## You can ask questions any time.
 
 ---
-## カジュアルなプレゼン
+## This presentation is casual.
 
 ---
-## 1. 目次
-1. 目次
-2. このプレゼンの目的
-3. ロジバンって何？
-4. ロジバンの良い点
-5. ロジバンの欠点
-6. 最後に
+## 1. Table of Contents
+1. Table of Contents
+2. The Purpose of the Presentation
+3. What is Lojban?
+4. Good Points of Lojban
+5. Bad Points of Lojban
+6. Conclusion
 
 ---
-## 2. このプレゼンの目的
+## 2. The Purpose of the Presentation
 
 ---
-## ロジバンに対する興味
+## I would like you to have an interest in Lojban
 
 ---
-## 3. ロジバンって何？
+## 3. What is Lojban?
 
 ---
-## 言語
+## A language
 
 ---
 <img data-src="img/dlang.png">
@@ -93,91 +94,92 @@
 <img data-src="img/shen.png">
 
 ---
-## ではなく・・・
+## Lojban is not a programming language but...
 
 ---
-## 会話用の人工言語！
+## a constructed language for human communication.
 
 ---
-## LLG
-### Logical Language Group
+## LLG have devised sound, grammar, and vocabulary of Lojban
+### LLG stands for the Logical Language Group.
 
 ---
-## 4. ロジバンの良い点
+## 4. Good points of Lojban
 
 ---
-## つづりと発音が完全に対応している
-### ひらがな、カタカナ
+## Spelling of a word completely corresponds to it's pronunciation.
+### Like Hiragana, or Katakana
 
 ---
-## 綴りから単語の種類がある程度分かる
+## Spelling of a word indicates it's word class
 
-* 最後が子音： 固有名詞
-* 最後が母音で二重子音を含む： 述語
-* 最後が母音で二重母音を含まない： 機能語
-
----
-## 一般名詞、動詞、形容詞、副詞という区別がない
-### 全て述語
+* A word ending with a consonant: proper noun
+* A word ending with a vowel
+    * and including a double consonant: predicate
+    * and including no double consonant word: structure word
 
 ---
-### {sutra}: x1 は x2 （動作／事）に関して速い
-* {lo sutra}: 速い人、速いもの
-* {ti sutra}: これは速い
-* {tu sutra cipni}: あれは速い鳥だ
-* {mi sutra bajra}: 私は速く走る
+## There is no classification such as common noun, verb, adjective, and adverb.
+### Predicates take a role as them.
 
 ---
-### {bajra}: x1 は x2 （表面）を x3 （肢）・ x4 （調子）で走る
-* {lo bajra}: 走る人、走るもの
-* {mi bajra}: 私は走る
-* {tu bajra remna}: あれは走る人だ
-* {mi bajra tatpi}: 私は走り疲れた
+### {sutra}: x1 is fast / swift / quick / hastes / rapid at doing / being / bringing about x2 (event / state).
+* {lo sutra}: Something fast
+* {ti sutra}: This is fast.
+* {tu sutra cipni}: That is a fast bird.
+* {mi sutra bajra}: I run fast.
 
 ---
-### {cipna}: x1 は x2 （種類）のトリ綱
-* {lo cipna}: 鳥
-* {ti cipna}: これは鳥だ
-* {tu cipna pimlu}: あれは鳥の羽だ
-* {mi cipna bajra}: 私は鳥的に走る
+### {bajra}: x1 runs on surface x2 using limbs x3 with gait x4.
+* {lo bajra}: Someone who runs
+* {mi bajra}: I run
+* {tu bajra remna}: That is a running persone.
+* {mi bajra tatpi}: I'm tired from running.
 
 ---
-## 「suddenly death」のようなミスが起きない
+### {cipna}: x1 is a bird / avian / fowl of species x2.
+* {lo cipna}: A bird
+* {ti cipna}: This is a bird.
+* {tu cipna pimlu}: That is a feather of a bird.
+* {mi cipna bajra}: I run like a bird.
 
 ---
-## 構文が非曖昧
-### EBNF、PEG
+## There is no mistake such as "suddenly death" in Lojban
 
 ---
-### 可愛い小さい女の子の学校
+## Syntax of Lojban is unambiguous
+### There are formal grammar of Lojban written in EBNF and PEG
+
+---
+### A pretty little girl's school
 
 ---
 ### {melbi cmalu nixli ckule}
-* {melbi}: 可愛い
-* {cmalu}: 小さい
-* {nixli}: 女の子
-* {ckule}: 学校
+* {melbi}: pretty
+* {cmalu}: little
+* {nixli}: girl
+* {ckule}: school
 
 ---
 ### {((melbi cmalu) nixli) ckule}
-#### （（可愛い的に小さい）女の子）の学校
+#### A（（prettywisely little）girl）'s school
 
 ---
 ### {melbi cmalu bo nixli ckule}
 
 ---
 ### {(melbi (cmalu bo nixli)) ckule}
-#### （可愛い（小さい女の子））の学校
+#### A（pretty（little girl））'s school
 
 ---
-## 心態詞
+## Attitudinals
 
 ---
-## 感情、態度、根拠
+## Attitudinals indicate speaker's emotion, attitude, or source of the utterance
 
 ---
 ## {.ui}: （≧∀≦）、😄
-### {.ui lo cabdei cu mumdei}: 今日は金曜日😄
+### {.ui lo cabdei cu mumdei}: It's Friday.😄
 
 ---
 ## {.oi}:
@@ -188,86 +190,86 @@
 <img width="70%" data-src="img/aa.png">
 
 ---
-## {.ai}: それをしようとする態度
-### {.ai mi sipna}: 寝よう
+## {.ai}: Attitude of the intention
+### {.ai mi sipna}: I'm going to sleep.
 
 ---
-## {.au}: それを欲する態度
-### {.au mi sipna}: 寝たい
+## {.au}: Attitude of the desire
+### {.au mi sipna}: I want to sleep.
 
 ---
-## {.ti'e}: 根拠は伝聞。〜らしい
+## {.ti'e}: I hear 〜
 
 ---
-## {.za'a}: 根拠は観察。見た感じ〜
+## {.za'a}: I observe 〜
 
 ---
-## {.pe'i}: 根拠は思考。〜だと思う
+## {.pe'i}: I think 〜
 
 ---
-## 面白い機能語
+## Interesting Structure Words
 
 ---
-## {zoi}: 非ロジバンテキスト引用
+## {zoi}: Foreign text quoting
 
 ---
-## {zoi X. （テキスト） .X}:
-## （テキスト）を文字列（音素列）として引用
+## {zoi X. （foreign text） .X}:
+## Quoting（foreign text）as a string（sound sequence）
 ### {zoi .url. http://www.nowhere.co.jp/ .url.}
-### {zoi .py. 竹やぶ焼けた .py.}
+### {zoi .py. Takeyabuyaketa .py.}
 
 ---
-## {.i}: 文の始まりを示す
-### 英語のピリオド、日本語の句点
+## {.i}: Indiciating start of a sentence
+### Like period or Kuten
 
 ---
-## 発音がある！
+## {.i} has a sound!
 
 ---
-## {si}: 直前の単語を言わなかった（書かなかった）ことにする
+## {si}: Erasing the last Lojban word
 
 ---
 ### {mi nelci la .imaks. si .vim.}:
-### 私は ~~Emacs~~ Vimが好きです
+### I like ~~Emacs~~ Vim.
 
 ---
-## {lo'ai ... sa'ai ... le'ai}: 誤り訂正
+## {lo'ai ... sa'ai ... le'ai}: Error correction
 
 ---
 ### {lo'ai .imaks. sa'ai .vim. le'ai}:
 ### sed -e "s/emacs/vim/g"
 
 ---
-## 5. ロジバンの欠点
+## 5. Bad Points of Lojban
 
 ---
-## 話者が少ない
+## There are few Lojban speakers.
 
 ---
-## ロジバン関連の文章も少ない
+## There are few documentations about or written in Lojban.
 
 ---
-## 公式のロジ和辞書が貧弱
+## The official Lojban-Japanese dictionary is not so powerful.
 
 ---
-## 6. 最後に
+## 6. Conclusion
 
 ---
-## ロジバン楽しいので、
-## みなさんもどうですか？（提案）
+## Lojban is so interesting.
+## How about you?
 
 ---
-## ロジバン学習者のためのリンク
-* 英語
-    * [ロジ英辞書](http://mw.lojban.org/extensions/ilmentufa/i/en/index.html#)
+## Links for Lojban learners
+* English
+    * [Lojban-English dictionary](http://mw.lojban.org/extensions/ilmentufa/i/en/index.html#)
     * [The Complete Lojban Language](http://lojban.github.io/cll/)
-* 日本語
+* Japanese
     * [初めてのロジバン](http://cogas.github.io/hajiloji/)
-    * [ロジ和辞書](http://mw.lojban.org/extensions/ilmentufa/i/ja/index.html#)
+    * [Lojban-Japanese dictionary](http://mw.lojban.org/extensions/ilmentufa/i/ja/index.html#)
     * [The Complete Lojban Language 日本語抄訳](http://ponjbogri.github.io/cll-ja/)
 
 ---
-## 引用元
+## Reference
 * http://dlang.org/
 * https://www.haskell.org/
 * https://www.ruby-lang.org/en/
