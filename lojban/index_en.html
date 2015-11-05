@@ -1,0 +1,323 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+
+        <title>人工言語ロジバン</title>
+
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/night.css" id="theme">
+
+        <!-- Code syntax highlighting -->
+        <link rel="stylesheet" href="lib/css/zenburn.css">
+
+        <!--[if lt IE 9]>
+            <script src="lib/js/html5shiv.js"></script>
+        <![endif]-->
+
+        <!-- fork me on github -->
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.1.1/gh-fork-ribbon.min.css" />
+
+        <style rel="stylesheet">
+            .reveal .progress {
+                height: 12px !important;
+            }
+            .reveal .slide-number {
+                font-size: 32px !important;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="reveal">
+            <div class="slides">
+                <section data-markdown data-separator="^\n---">
+                    <script type="text/template">
+# 人工言語ロジバン
+
+---
+<img width="15%" data-src="img/youxkei.png">
+### Hisayuki Mima
+* s1200230
+* Twitter: [@youxkei](https://twitter.com/youxkei)
+* Github: [youxkei](https://github.com/youxkei)
+* 最近やってること
+    * Haskell
+    * React
+    * ロジバン
+    * 東方紺珠伝LunaticRTA
+
+---
+## 注意
+
+---
+## 任意のタイミングで質問OK
+
+---
+## カジュアルなプレゼン
+
+---
+## 1. 目次
+1. 目次
+2. このプレゼンの目的
+3. ロジバンって何？
+4. ロジバンの良い点
+5. ロジバンの欠点
+6. 最後に
+
+---
+## 2. このプレゼンの目的
+
+---
+## ロジバンに対する興味
+
+---
+## 3. ロジバンって何？
+
+---
+## 言語
+
+---
+<img data-src="img/dlang.png">
+<img data-src="img/haskell.png">
+
+<img data-src="img/ruby.png">
+<img data-src="img/python.png">
+
+<img width="50%" data-src="img/swift.png">
+<img data-src="img/shen.png">
+
+---
+## ではなく・・・
+
+---
+## 会話用の人工言語！
+
+---
+## LLG
+### Logical Language Group
+
+---
+## 4. ロジバンの良い点
+
+---
+## つづりと発音が完全に対応している
+### ひらがな、カタカナ
+
+---
+## 綴りから単語の種類がある程度分かる
+
+* 最後が子音： 固有名詞
+* 最後が母音で二重子音を含む： 述語
+* 最後が母音で二重母音を含まない： 機能語
+
+---
+## 一般名詞、動詞、形容詞、副詞という区別がない
+### 全て述語
+
+---
+### {sutra}: x1 は x2 （動作／事）に関して速い
+* {lo sutra}: 速い人、速いもの
+* {ti sutra}: これは速い
+* {tu sutra cipni}: あれは速い鳥だ
+* {mi sutra bajra}: 私は速く走る
+
+---
+### {bajra}: x1 は x2 （表面）を x3 （肢）・ x4 （調子）で走る
+* {lo bajra}: 走る人、走るもの
+* {mi bajra}: 私は走る
+* {tu bajra remna}: あれは走る人だ
+* {mi bajra tatpi}: 私は走り疲れた
+
+---
+### {cipna}: x1 は x2 （種類）のトリ綱
+* {lo cipna}: 鳥
+* {ti cipna}: これは鳥だ
+* {tu cipna pimlu}: あれは鳥の羽だ
+* {mi cipna bajra}: 私は鳥的に走る
+
+---
+## 「suddenly death」のようなミスが起きない
+
+---
+## 構文が非曖昧
+### EBNF、PEG
+
+---
+### 可愛い小さい女の子の学校
+
+---
+### {melbi cmalu nixli ckule}
+* {melbi}: 可愛い
+* {cmalu}: 小さい
+* {nixli}: 女の子
+* {ckule}: 学校
+
+---
+### {((melbi cmalu) nixli) ckule}
+#### （（可愛い的に小さい）女の子）の学校
+
+---
+### {melbi cmalu bo nixli ckule}
+
+---
+### {(melbi (cmalu bo nixli)) ckule}
+#### （可愛い（小さい女の子））の学校
+
+---
+## 心態詞
+
+---
+## 感情、態度、根拠
+
+---
+## {.ui}: （≧∀≦）、😄
+### {.ui lo cabdei cu mumdei}: 今日は金曜日😄
+
+---
+## {.oi}:
+<img data-src="img/linus.png">
+
+---
+## {.o'uro'ubu'o}: あぁ^～ as in あぁ^～心がぴょんぴょんするんじゃぁ^～
+<img width="70%" data-src="img/aa.png">
+
+---
+## {.ai}: それをしようとする態度
+### {.ai mi sipna}: 寝よう
+
+---
+## {.au}: それを欲する態度
+### {.au mi sipna}: 寝たい
+
+---
+## {.ti'e}: 根拠は伝聞。〜らしい
+
+---
+## {.za'a}: 根拠は観察。見た感じ〜
+
+---
+## {.pe'i}: 根拠は思考。〜だと思う
+
+---
+## 面白い機能語
+
+---
+## {zoi}: 非ロジバンテキスト引用
+
+---
+## {zoi X. （テキスト） .X}:
+## （テキスト）を文字列（音素列）として引用
+### {zoi .url. http://www.nowhere.co.jp/ .url.}
+### {zoi .py. 竹やぶ焼けた .py.}
+
+---
+## {.i}: 文の始まりを示す
+### 英語のピリオド、日本語の句点
+
+---
+## 発音がある！
+
+---
+## {si}: 直前の単語を言わなかった（書かなかった）ことにする
+
+---
+### {mi nelci la .imaks. si .vim.}:
+### 私は ~~Emacs~~ Vimが好きです
+
+---
+## {lo'ai ... sa'ai ... le'ai}: 誤り訂正
+
+---
+### {lo'ai .imaks. sa'ai .vim. le'ai}:
+### sed -e "s/emacs/vim/g"
+
+---
+## 5. ロジバンの欠点
+
+---
+## 話者が少ない
+
+---
+## ロジバン関連の文章も少ない
+
+---
+## 公式のロジ和辞書が貧弱
+
+---
+## 6. 最後に
+
+---
+## ロジバン楽しいので、
+## みなさんもどうですか？（提案）
+
+---
+## ロジバン学習者のためのリンク
+* 英語
+    * [ロジ英辞書](http://mw.lojban.org/extensions/ilmentufa/i/en/index.html#)
+    * [The Complete Lojban Language](http://lojban.github.io/cll/)
+* 日本語
+    * [初めてのロジバン](http://cogas.github.io/hajiloji/)
+    * [ロジ和辞書](http://mw.lojban.org/extensions/ilmentufa/i/ja/index.html#)
+    * [The Complete Lojban Language 日本語抄訳](http://ponjbogri.github.io/cll-ja/)
+
+---
+## 引用元
+* http://dlang.org/
+* https://www.haskell.org/
+* https://www.ruby-lang.org/en/
+* https://www.python.org/
+* https://developer.apple.com/swift/
+* http://ponjbogri.github.io/cll-ja/
+* https://www.youtube.com/watch?v=MShbP3OpASA
+* http://dic.nicovideo.jp/a/あぁ%5E〜心がぴょんぴょんするんじゃぁ%5E〜
+* http://www.nicovideo.jp/watch/1397552685
+
+---
+## ki’e .i ko zifre retsku fu lo ti .preznteicn.
+                    </script>
+                </section>
+                <p style="display: block; position: absolute; bottom: 0px;"><a href="http://git.io/lojban_jp">git.io/lojban_jp</a>　　<a href="http://git.io/lojban_en">git.io/lojban_en</a></p>
+            </div>
+        </div>
+
+        <div class="github-fork-ribbon-wrapper right">
+            <div style="background-color: #090" class="github-fork-ribbon">
+                <a href="https://github.com/youxkei/slides/tree/gh-pages/lojban">Fork me on GitHub</a>
+            </div>
+        </div>
+
+        <script src="lib/js/head.min.js"></script>
+        <script src="js/reveal.js"></script>
+
+        <script>
+            Reveal.initialize({
+                controls: false,
+                progress: true,
+                history: true,
+                center: true,
+                slideNumber: 'c/t',
+                margin: 0.02,
+                minScale: 0,
+                maxScale: 1024,
+
+                transition: 'none', // none/fade/slide/convex/concave/zoom
+
+                    // Optional reveal.js plugins
+                dependencies: [
+                    { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                    { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                    { src: 'plugin/zoom-js/zoom.js', async: true },
+                    { src: 'plugin/notes/notes.js', async: true },
+                ]
+            });
+        </script>
+    </body>
+</html>
