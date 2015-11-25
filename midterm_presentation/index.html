@@ -1,0 +1,323 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+
+        <title>Yampaの意味と実装</title>
+
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/night.css" id="theme">
+
+        <!-- Code syntax highlighting -->
+        <link rel="stylesheet" href="lib/css/zenburn.css">
+
+        <!--[if lt IE 9]>
+            <script src="lib/js/html5shiv.js"></script>
+        <![endif]-->
+
+        <!-- fork me on github -->
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.1.1/gh-fork-ribbon.min.css" />
+
+        <style rel="stylesheet">
+            .reveal .progress {
+                height: 12px !important;
+            }
+            .reveal .slide-number {
+                font-size: 32px !important;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="reveal">
+            <div class="slides">
+                <section data-markdown data-separator="^---">
+                    <script type="text/template">
+                        # Yampaの
+                        # 意味と実装
+                        ### s1200230
+                        ### Hisayuki Mima
+                        ---
+                        ## ※注意
+                        Haskell
+                        ---
+                        ## 目次
+                        * 目次
+                        * Signal
+                        * System
+                        * Event
+                        * FRP
+                        * Yampa
+                        * Yampaの意味
+                        * Yampaの実装
+                        * Yampaの意味と実装の対応
+                        * 今後の予定
+                        * 参考文献
+                        ---
+                        ## Signal
+                        時間を何らかの値に写す関数
+                        $$ x : R \rightarrow  a $$
+                        ---
+                        ## Signalの例
+                        * $ x(t) = \sin(t) $
+                        * $ y(t) = e^t $
+                        ---
+                        ## System
+                        SignalをSignalに写す関数
+                        $$ f: (R \rightarrow a) \rightarrow (R \rightarrow b) $$
+                        ---
+                        ## Systemの例
+                        * $ f(x)(t) = \int\_{-\infty}^t x(s) ds $
+                        * $ g(x)(t) = x(t - 1) $
+                        ---
+                        ## Event
+                        時間を、時間と何らかの値のペアのリストに写す関数
+                        $$ e : R \rightarrow [(R, a)] $$
+                        ---
+                        ## FRP
+                        Functional Reactive Programming
+                        ---
+                        ## FRP
+                        System、Signal、Eventを宣言的にプログラミングする手法の一つ
+                        ---
+                        ## FRPのイメージ
+                        <img data-src='img/system.png' width='50%'>
+                        <pre><code data-trim>
+                        a :: Double
+                        a = 1.0
+
+                        f :: SF Double Double
+                        f = loop $ arr (\(x, y) -> x * a)
+                               >>> integral
+                               >>> arr (\x -> (x, x))
+                        </code></pre>
+                        ---
+                        ## Yampa
+                        * FRPフレームワーク
+                        * Haskell
+                        * SF（Signal Function）はSystemに対応
+                        ---
+                        ## Yampaの例
+                        <img data-src='img/system.png' width='50%'>
+                        <pre><code data-trim>
+                        import FRP.Yampa
+
+                        a :: Double
+                        a = 1.0
+
+                        f :: SF Double Double
+                        f = loop $ arr (\(x, y) -> x * a)
+                               >>> integral
+                               >>> arr (\x -> (x, x))
+                        </code></pre>
+                        ---
+                        ## Yampaの意味
+                        * $ \langle SF ~ a ~ b \rangle $ : 型$SF ~ a ~ b$を持つHaskellの式を集めた集合
+                        * $ \mathbb{R}^+ = \\{ x \in \mathbb{R} | x \geq 0 \\} $
+                        ---
+                        ## Yampaの意味
+                        $$ S: \langle SF ~ a ~ b \rangle \rightarrow (\mathbb{R}^+ \rightarrow a) \rightarrow (\mathbb{R}^+ \rightarrow b) $$
+                        ---
+                        ## Yampaの意味
+                        $$\begin{eqnarray}
+                        S⟦\textsf{constant c}⟧(f)(t) &=& \lfloor \textsf{c} \rfloor \\\\
+                        S⟦\textsf{arr f}⟧(g)(t) &=& \lfloor f \rfloor (t) \\\\
+                        S⟦\textsf{first sf}⟧(f)(t) &=& (S⟦\textsf{sf}⟧(fst \circ f)(t), (snd \circ f)(t)) \\\\
+                        S⟦\textsf{sf1 >>> sf2}⟧(f)(t) &=& S⟦\textsf{sf2}⟧(S⟦\textsf{sf1}⟧(f))(t) \\\\
+                        S⟦\textsf{integral}⟧(f)(t) &=& \int\_0^t f(s) ds \\\\
+                        S⟦\textsf{time}⟧(f)(t) &=& t \\\\
+                        \end{eqnarray}$$
+
+                        $ \lfloor \textsf{e} \rfloor $: Haskellの式$\textsf{e}$が表す値
+                        ---
+                        ## Yampaの実装
+                        ```haskell
+                        type Time = Double
+                        type DTime = Double
+                        type TF a b = DTime -> SF a b
+                        newtype SF a b = SF (a -> (TF a b, b))
+
+                        constant :: b -> SF a b
+                        constant c = SF $ \_ -> (\_ -> constant c, c)
+
+                        arr :: (a -> b) -> SF a b
+                        arr f = SF $ \x -> (\dt -> arr f, f x)
+
+                        first :: SF a b -> SF (a, d) (b, d)
+                        first (SF sf) = SF $ \(x, z) -> let (tf, y) = sf x in (\dt -> first (tf dt), (y, z))
+
+                        (>>>) :: SF a b -> SF b c -> SF a c
+                        (SF sf1) >>> (SF sf2) = SF $ \x ->
+                            let
+                                (tf1, y) = sf1 x
+                                (tf2, z) = sf2 y
+                            in (\dt -> (tf1 dt) >>> (tf2 dt), z)
+                        ```
+                        ---
+                        ## Yampaの実装
+                        ```haskell
+                        integral :: SF Double Double
+                        integral = imIntegral 0.0
+
+                        imIntegral :: Double -> SF Double Double
+                        imIntegral init = SF $ \x -> (\dt -> imIntegral (init + x * dt), init)
+
+                        time :: SF a Time
+                        time = constant 1 >>> integral
+                        ```
+                        ---
+                        ## Yampaの実装の実行関数
+                        $$\begin{array}{l}
+                        \widetilde{S}: \langle SF ~ a ~ b \rangle \rightarrow [\mathbb{R}^+] \rightarrow [a] \rightarrow [b] \\\\
+                        \widetilde{S}⟦\textsf{sf}⟧(ts)(xs) = run(\lfloor \textsf{sf} \rfloor)(ts)(xs)
+                        \end{array}$$
+                        ---
+                        ## Yampaの実装の実行関数
+                        $$\begin{array}{l}
+                        run: SF \ a \ b \rightarrow [\mathbb{R}^+] \rightarrow [a] \rightarrow [b] \\\\
+                        run(sf)(t:[])(x:[]) = snd(sf(x)):[] \\\\
+                        run(sf)(t:t':ts)(x:x':xs) = \\\\
+                        ~~~~ snd(sf(x)):run(fst(sf(x))(t'-t))(t':ts)(x':xs)
+                        \end{array}$$
+                        ---
+                        ## Yampaの実装の実行関数の極限
+                        <div style='font-size: 80%'>
+                            \begin{array}{l}
+                                \widetilde{S}^{\*}: \langle SF ~ a ~ b \rangle \rightarrow (\mathbb{R}^+ \rightarrow a) \rightarrow (\mathbb{R}^+ \rightarrow b) \\\\
+                                \widetilde{S}^{\*}⟦\textsf{sf}⟧(f)(t) = \begin{cases}
+                                    \displaystyle \lim\_{|P\_t| \rightarrow 0} last(\widetilde{S}⟦\textsf{sf}⟧(P\_t)(map(f)(P\_t))) & \textrm{if such limit exists} \\\\
+                                    \perp & \textrm{otherwise}
+                                \end{cases}
+                            \end{array}
+                        </div>
+                        $P\_t$は区間$[0,t]$のpartition
+
+                        $|P\_t|$は$P\_t$の最大の部分区間
+                        ---
+                        ## Yampaの意味と実装の対応
+                        $$ S⟦\textsf{sf}⟧ = \widetilde{S}^\*⟦\textsf{sf}⟧ $$
+                        ---
+                        ## Yampaの意味と実装の対応
+                        ### constant c
+                        $$ \widetilde{S}⟦\textsf{constant c}⟧(ts)(xs) = map(\lambda \\\_ . \lfloor c \rfloor)(ts) $$
+
+                        を$ts$と$xs$の構造に関する帰納法で示す。
+                        ---
+                        ## Yampaの意味と実装の対応
+                        ### constant c
+                        #### $ts = t:[]$、$xs = x:[]$の場合
+                        $$
+                        \begin{array}{l}
+                            \widetilde{S}⟦\textsf{constant c}⟧(t:[])(x:[]) \\\\
+                            = run(\lfloor \textsf{constant c} \rfloor)(t:[])(x:[]) \\\\
+                            = run(\lfloor \textsf{constant} \rfloor \lfloor \textsf{c} \rfloor)(t:[])(x:[]) \\\\
+                            = run(\lambda \\\_ . (\lambda \\\_ . \lfloor \textsf{constant} \rfloor \lfloor \textsf{c} \rfloor, \lfloor \textsf{c} \rfloor))(t:[])(x:[]) \\\\
+                            = \lfloor c \rfloor : [] \\\\
+                            = map(\\\_ . \lfloor c \rfloor)(t:[])
+                        \end{array}
+                        $$
+                        ---
+                        ## Yampaの意味と実装の対応
+                        ### constant c
+                        #### $ts = t:t':ts$、$xs = x:x':xs$の場合
+                        <div style='font-size: 80%'>
+                            $$
+                            \begin{array}{l}
+                                \widetilde{S}⟦\textsf{constant c}⟧(t:t':ts)(x:x':xs) \\\\
+                                = run(\lambda \\\_ . (\lambda \\\_ . \lfloor \textsf{constant} \rfloor \lfloor \textsf{c} \rfloor, \lfloor \textsf{c} \rfloor))(t:t':ts)(x:x':xs) \\\\
+                                = \lfloor c \rfloor : run(\lfloor \textsf{constant} \rfloor \lfloor \textsf{c} \rfloor)(t':ts)(x':xs) \\\\
+                                = \lfloor c \rfloor : run(\lfloor \textsf{constant c} \rfloor)(t':ts)(x':xs) \\\\
+                                = \lfloor c \rfloor : \widetilde{S}⟦\textsf{constant c}⟧(t':ts)(x':xs) \\\\
+                                = \lfloor c \rfloor : map(\lambda \\\_ . \lfloor c \rfloor)(t':ts) \\\\
+                                = (\lambda \\\_ . \lfloor c \rfloor)(t) : map(\lambda \\\_ . \lfloor c \rfloor)(t':ts) \\\\
+                                = map(\lambda \\\_ . \lfloor c \rfloor)(t:t':ts)
+                            \end{array}
+                            $$
+                        </div>
+                        ---
+                        ## Yampaの意味と実装の対応
+                        ### constant c
+                        $$
+                        \begin{array}{l}
+                            \displaystyle \lim\_{|P\_t| \rightarrow 0} last(\widetilde{S}⟦\textsf{constant c}⟧(P\_t)(map(f)(P\_t))) \\\\
+                            \displaystyle = \lim\_{|P\_t| \rightarrow 0} last(map(\lambda \\\_ . \lfloor c \rfloor)(P\_t)) \\\\
+                            \displaystyle = \lim\_{|P\_t| \rightarrow 0} \lfloor c \rfloor \\\\
+                            = \lfloor c \rfloor \\\\
+                            = \widetilde{S}^\*⟦\textsf{constant c}⟧(f)(t)
+                        \end{array}
+                        $$
+                        ---
+                        ## Yampaの意味と実装の対応
+                        ### constant c
+                        $$ S⟦\textsf{constant c}⟧ = \widetilde{S}^\*⟦\textsf{constant c}⟧ $$
+                        ---
+                        ## Yampaの意味と実装の対応
+                        ### その他
+                        $$
+                        \begin{eqnarray}
+                            S⟦\textsf{arr f}⟧ &=& \widetilde{S}^\*⟦\textsf{arr f}⟧ \\\\
+                            S⟦\textsf{first sf}⟧ &=& \widetilde{S}^\*⟦\textsf{first sf}⟧ \\\\
+                            S⟦\textsf{integral}⟧ &=& \widetilde{S}^\*⟦\textsf{integral}⟧
+                        \end{eqnarray}
+                        $$
+                        ---
+                        ## 今後の予定
+                        * $ S⟦\textsf{sf1 >>> sf2}⟧ = \widetilde{S}^\*⟦\textsf{sf1 >>> sf2}⟧ $を示す。
+                        * 離散時間の場合を考える。
+                        ---
+                        ## 参考文献
+                        * Hwei P. Hsu: Signals and Systems
+                        * Zhanyong Wan and Paul Hudak: Functional Reactive Programming from First Principles
+                        * Hai Liu and Paul Hudak: Plugging a Space Leak with an Arrow
+                        * https://hackage.haskell.org/package/Yampa-0.9.1.1/src/src/AFRP.hs
+                    </script>
+                </section>
+                <p style="display: block; position: absolute; bottom: 0px; font-family: monospace"><a href="http://git.io/vBWIP">http://git.io/vBWIP</a></p>
+            </div>
+        </div>
+
+        <div class="github-fork-ribbon-wrapper right">
+            <div style="background-color: #090" class="github-fork-ribbon">
+                <a href="https://github.com/youxkei/slides/tree/gh-pages/midterm_presentation">Fork me on GitHub</a>
+            </div>
+        </div>
+
+        <script src="lib/js/head.min.js"></script>
+        <script src="js/reveal.js"></script>
+
+        <script>
+            Reveal.initialize({
+                controls: false,
+                progress: true,
+                history: true,
+                center: true,
+                slideNumber: 'c/t',
+                margin: 0.02,
+                minScale: 0,
+                maxScale: 1024,
+
+                transition: 'none', // none/fade/slide/convex/concave/zoom
+
+                math: {
+                    mathjax: 'https://cdn.mathjax.org/mathjax/latest/MathJax.js',
+                    config: 'TeX-AMS_HTML-full'  // See http://docs.mathjax.org/en/latest/config-files.html
+                },
+
+                dependencies: [
+                    { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                    { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                    { src: 'plugin/zoom-js/zoom.js', async: true },
+                    { src: 'plugin/notes/notes.js', async: true },
+                    { src: 'plugin/math/math.js', async: true },
+                ]
+            });
+        </script>
+    </body>
+</html>
