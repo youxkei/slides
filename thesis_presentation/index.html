@@ -1,0 +1,318 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+
+        <title>Formal Semantics of the Yampa Functional Reactive Programming Language</title>
+
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/night.css" id="theme">
+
+        <!-- Code syntax highlighting -->
+        <link rel="stylesheet" href="lib/css/zenburn.css">
+
+        <!--[if lt IE 9]>
+            <script src="lib/js/html5shiv.js"></script>
+        <![endif]-->
+
+        <!-- fork me on github -->
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.1.1/gh-fork-ribbon.min.css" />
+
+        <style rel="stylesheet">
+            .reveal .progress {
+                height: 12px !important;
+            }
+            .reveal .slide-number {
+                font-size: 32px !important;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="reveal">
+            <div class="slides">
+                <section data-markdown data-separator="^---" data-separator-notes="^Note:">
+                    <script type="text/template">
+                        ## Formal Semantics of the Yampa Functional Reactive Programming Language
+                        ### s1200230
+                        ### Hisayuki Mima
+                        Note:
+                        I'm going to introduce my research.
+                        ---
+                        ## Table of Contents
+                        * Table of Contents
+                        * FRP
+                        * Yampa
+                        * Motivation
+                        * Semantics of Yampa
+                        * Interpreter of Yampa
+                        * Correctness
+                        * Result
+                        * Reference
+                        Note:
+                        This is the table of contents.
+                        I will first talk about FRP and Yampa as the background of my research.
+                        And then I'll talk about my motivation.
+                        Then I'll introduce my research.
+                        ---
+                        ## FRP
+                        Note:
+                        First, I'll talk about FRP.
+                        ---
+                        ## FRP
+                        * Functional Reactive Programming
+                        * Declarative programming paradigm
+                        * Main idea of FRP
+                            * Behavior
+                            * Event
+                        Note:
+                        FRP stands for Functional Reactive Programming.
+                        It is one of the declarative programming paradigm.
+                        Its main ideas are Behavior and Event.
+                        Let's take a closer look at them.
+                        ---
+                        ## Behavior
+                        * Time-varying value
+                        * Continuous
+                        * Considered as mathematical function:
+                        $$ x : \mathbb{R} \rightarrow  a $$
+                        Note:
+                        Behavior is continuous, time-varying value.
+                        Since the behavior is counituous, it is considered as mathematical function taking time and returning some value.
+                        ---
+                        ## Example of Behavior
+                        * $ x(t) = \sin(t) $
+                        * $ y(t) = e^t $
+                        * Current mouse position
+                        Note:
+                        There are some examples.
+                        The sine function and the function e to the t can be behaviours.
+                        And, current mouse position can also be a behavior in graphical user interface programming.
+                        ---
+                        ## Event
+                        * Time-ordered sequence of event occurrences
+                        * Discrete
+                        Note:
+                        Next, Event is discrete, time-ordered sequence of event occurrences.
+                        ---
+                        ## Example of Event
+                        * Mouse button event
+                        * Keyboard event
+                        Note:
+                        There are some examples of FRP event.
+                        Mouse button push event and Keyboard push event can be considered as events of FRP.
+                        ---
+                        ## Example of FRP [1]
+                        <img data-src='img/system.png' width='50%'>
+                        <pre><code data-trim>
+                        a :: Double
+                        a = 1.0
+
+                        f :: SF Double Double
+                        f = loop $ arr (\(x, ay) -> x - ay)
+                               >>> integral
+                               >>> arr (\x -> (x, a * x))
+                        </code></pre>
+
+                        Note:
+                        This is an example of FRP. You can easily find the correspondence between the diagram and the program.
+                        ---
+                        ## Application of FRP
+                        * Animation [6]
+                        * GUI [7]
+                        * Robotics [8]
+                        * Computer game [9]
+                        Note:
+                        There are some applications of FRP: animation, graphical user interface design, robotic, and computer game programming.
+                        ---
+                        ## Yampa
+                        Note:
+                        That's all about FRP and next I'll talk about Yampa.
+                        ---
+                        ## Yampa
+                        * FRP library
+                        * Haskell
+                        * Signal and Signal Function
+                        * Uses signals as both behaviors and events
+                        Note:
+                        Yampa is a FRP library written in Haskell.
+                        And Yampa consists of signals and signal functions.
+                        Yampa uses its signals as behaviors and events in FRP.
+                        Signal functions in Yampa are considered as behavior transformer, taking a behavior and returning another behavior.
+                        The main concept of Yampa is signal function, so signals is not appear explicitly in souce code with Yampa.
+                        ---
+                        ## Motivation
+                        Note:
+                        That's all of my brief introduction of Yampa.
+                        And next, I'll talk about my motivation.
+                        ---
+                        ## Motivation 1
+                        * "Functional Reactive Programming from First Principles" [2]
+                            * Correctness of FRP
+                            * Stream based implementation
+                        * Yampa
+                            * Automata based implementation
+                        Note:
+                        There is another research about FRP: "Functional Reactive Programming from First Principles".
+                        In Frist Principles, they proved the correctness of FRP implementation.
+                        But the implementation in First Principles is stream based and the implementation of Yampa is mealy automaton based.
+                        So the result of First Principles cannot be applied directly to Yampa.
+                        ---
+                        ## Motivation 2
+                        Proving the correctness of the implementation of Yampa
+                        Note:
+                        So I'm interested in the correctness of the implementation of Yampa, and tried to prove it.
+                        ---
+                        ## Semantics of Yampa
+                        Note:
+                        That's all about my motivation.
+                        Next I'll introduce my research.
+                        ---
+                        ## Semantics of Yampa 1
+                        $$ S: \langle \textsf{SF a b} \rangle \rightarrow (\mathbb{R}^+ \rightarrow a) \rightarrow (\mathbb{R}^+ \rightarrow b) $$
+
+                        * $ \langle \textsf{SF a b} \rangle $ : The set of haskell expressions of type $\textsf{SF a b}$
+                        * $ \mathbb{R}^+ = \\{ x \in \mathbb{R} ~ | ~ x \geq 0 \\} $
+                            * Positive time
+                        Note:
+                        I first defined the semantic function S like this.
+                        S takes a Yampa expression, and returns a behavior transformer.
+                        ---
+                        ## Semantics of Yampa 2
+                        $$\begin{eqnarray}
+                        S⟦\textsf{constant c}⟧(f)(t) &=& \lfloor \textsf{c} \rfloor \\\\
+                        S⟦\textsf{sf1 >>> sf2}⟧(f)(t) &=& S⟦\textsf{sf2}⟧(S⟦\textsf{sf1}⟧(f))(t) \\\\
+                        S⟦\textsf{integral}⟧(f)(t) &=& \int\_0^t f(s) ~ ds \\\\
+                        S⟦\textsf{time}⟧(f)(t) &=& t \\\\
+                        \end{eqnarray}$$
+
+                        $ \lfloor \textsf{e} \rfloor $: The denotation of Haskell expression $\textsf{e}$
+                        Note:
+                        According to the documentation of Yampa, I defined the semantic function S like this.
+                        ---
+                        ## Interpreter of Yampa
+                        Note:
+                        Next I'll talk about the interpreter of Yampa.
+                        ---
+                        ## Interpreter of Yampa 1
+                        * GHC and the real operating system
+                            * Difficult to prove the correctness
+                        * Abstract interpreter
+                        Note:
+                        Using GHC, a compiler for Haskell, and the real operating system is too difficult to prove the correctness.
+                        So I defined an abstract interpreter for Yampa.
+                        ---
+                        ## Interpreter of Yampa 2
+                        $$\begin{array}{l}
+                        \widetilde{S}: \langle \textsf{SF a b} \rangle \rightarrow \left[\mathbb{R}^+\right] \rightarrow [a] \rightarrow [b] \\\\
+                        \widetilde{S}⟦\textsf{sf}⟧(ts)(xs) = run(\lfloor \textsf{sf} \rfloor)(ts)(xs)
+                        \end{array}$$
+                        Note:
+                        S tilde is the interpreter to run Yampa expression in the world of mathematics.
+                        S tilde takes lists of sample times and inputs, then returns an output list.
+                        ---
+                        ## Interpreter of Yampa 3
+                        $$\begin{array}{l}
+                        run: SF \ a \ b \rightarrow \left[\mathbb{R}^+\right] \rightarrow [a] \rightarrow [b] \\\\
+                        run(sf)(t:[])(x:[]) = snd(sf(x)):[] \\\\
+                        run(sf)(t:t':ts)(x:x':xs) = \\\\
+                        ~~~~ snd(sf(x)):run(\mathit{fst}(sf(x))(t'-t))(t':ts)(x':xs)
+                        \end{array}$$
+                        Note:
+                        Here is the actual implementation of S tilde.
+                        ---
+                        ## Limit of interpreter
+                        <div style='font-size: 80%'>
+                            \begin{array}{l}
+                                \widetilde{S}^{\*}: \langle \textsf{SF a b} \rangle \rightarrow (\mathbb{R}^+ \rightarrow a) \rightarrow (\mathbb{R}^+ \rightarrow b) \\\\
+                                \widetilde{S}^{\*}⟦\textsf{sf}⟧(f)(t) = \begin{cases}
+                                    \displaystyle \lim\_{\left|P\_t\right| \rightarrow 0} last(\widetilde{S}⟦\textsf{sf}⟧(P\_t)(map(f)(P\_t))) & \textrm{if such limit exists} \\\\
+                                    \perp & \textrm{otherwise}
+                                \end{cases}
+                            \end{array}
+                        </div>
+                        * $P\_t$ is a partition of closed interval $[0,t]$
+                            * List of sample times
+                        * $\left|P\_t\right|$ is a maximum interval
+                            * $\displaystyle \lim\_{\left|P\_t\right| \rightarrow 0}$: The limit as sampling interval goes to $0$
+                        Note:
+                        S tilde is not an behavior transformer, and I'm interested in the limit of the interpreter as the sampling interval goes to zero.
+                        So I defined a function calculating the limit of the interpreter, called S tilde star.
+                        ---
+                        ## Correctness
+                        $$ S⟦\textsf{sf}⟧(f)(t) = \widetilde{S}^\*⟦\textsf{sf}⟧(f)(t) $$
+                        Note:
+                        Then I proved the correctness of Yampa expression by showning that its semantics is precisely equal to the limit of its interpreter.
+                        ---
+                        ## Result
+                        * Correctness
+                            * $\textsf{constant c}$
+                            * $\textsf{integral}$
+                            * $\textsf{sf1 >>> sf2}$
+                            * $\textsf{time}$
+                        Note:
+                        I proved the correctness of 4 Yampa primitives, constant, integral, composition, and time.
+                        ---
+                        ## Reference
+                        1. Hwei P. Hsu: Signals and Systems
+                        2. Zhanyong Wan and Paul Hudak: Functional Reactive Programming from First Principles
+                        3. Hai Liu and Paul Hudak: Plugging a Space Leak with an Arrow
+                        4. Zhanyong Wan, Walid Taha, and Paul Hudak: Real-Time FRP
+                        5. https://hackage.haskell.org/package/Yampa-0.9.1.1/src/src/AFRP.hs
+                        6. Conal Elliott and Paul Hudak: Functional reactive animation
+                        7. Antony Courtney Frappe: Functional reactive programming in Java
+                        8. John Peterson, Gregory Hager, and Paul Hudak: A language for declarative robotic programming
+                        9. Antony Courtney, Henrik Nilsson, and John Peterson: The Yampa Arcade
+                        Note:
+                        That's all about my research. Thank you for your attention.
+                    </script>
+                </section>
+                <!--p style="display: block; position: absolute; bottom: 0px; font-family: monospace"><a href="http://git.io/vBWIP">http://git.io/vBWIP</a></p-->
+            </div>
+        </div>
+
+        <!--div class="github-fork-ribbon-wrapper right">
+            <div style="background-color: #090" class="github-fork-ribbon">
+                <a href="https://github.com/youxkei/slides/tree/gh-pages/midterm_presentation">Fork me on GitHub</a>
+            </div>
+        </div-->
+
+        <script src="lib/js/head.min.js"></script>
+        <script src="js/reveal.js"></script>
+
+        <script>
+            Reveal.initialize({
+                controls: false,
+                progress: true,
+                history: true,
+                center: true,
+                slideNumber: 'c/t',
+                margin: 0.02,
+                minScale: 0,
+                maxScale: 1024,
+
+                transition: 'none', // none/fade/slide/convex/concave/zoom
+
+                math: {
+                    mathjax: 'https://cdn.mathjax.org/mathjax/latest/MathJax.js',
+                    config: 'TeX-AMS_HTML-full'  // See http://docs.mathjax.org/en/latest/config-files.html
+                },
+
+                dependencies: [
+                    { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                    { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                    { src: 'plugin/zoom-js/zoom.js', async: true },
+                    { src: 'plugin/notes/notes.js', async: true },
+                    { src: 'plugin/math/math.js', async: true },
+                ]
+            });
+        </script>
+    </body>
+</html>
