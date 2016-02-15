@@ -61,16 +61,13 @@
                         Then I'll introduce my research.
                         ---
                         ## FRP
-                        Note:
-                        First, I'll talk about FRP.
-                        ---
-                        ## FRP
                         * Functional Reactive Programming
                         * Declarative programming paradigm
                         * Main idea of FRP
                             * Behavior
                             * Event
                         Note:
+                        First, I'll talk about FRP.
                         FRP stands for Functional Reactive Programming.
                         It is one of the declarative programming paradigm.
                         Its main ideas are Behavior and Event.
@@ -81,31 +78,26 @@
                         * Continuous
                         * Considered as mathematical function:
                         $$ x : \mathbb{R} \rightarrow  a $$
+                        * Examples
+                            * $ x(t) = \sin(t) $
+                            * $ y(t) = e^t $
+                            * Current mouse position
                         Note:
                         Behavior is continuous, time-varying value.
                         Since the behavior is counituous, it is considered as mathematical function taking time and returning some value.
-                        ---
-                        ## Example of Behavior
-                        * $ x(t) = \sin(t) $
-                        * $ y(t) = e^t $
-                        * Current mouse position
-                        Note:
-                        There are some examples.
+                        There are some examples of behavior.
                         The sine function and the function e to the t can be behaviours.
                         And, current mouse position can also be a behavior in graphical user interface programming.
                         ---
                         ## Event
                         * Time-ordered sequence of event occurrences
                         * Discrete
+                        * Examples
+                            * Mouse button event
+                            * Keyboard event
                         Note:
                         Next, Event is discrete, time-ordered sequence of event occurrences.
-                        ---
-                        ## Example of Event
-                        * Mouse button event
-                        * Keyboard event
-                        Note:
-                        There are some examples of FRP event.
-                        Mouse button push event and Keyboard push event can be considered as events of FRP.
+                        Mouse button event and keyboard event can be examples of FRP event.
                         ---
                         ## Example of FRP
                         <img data-src='img/system.png' width='50%'>
@@ -120,7 +112,8 @@
                         </code></pre>
 
                         Note:
-                        This is an example of FRP. You can easily find the correspondence between the diagram and the program.
+                        This is an example of FRP.
+                        You can easily find the correspondence between the diagram and the program.
                         ---
                         ## Example of FRP
                         <img data-src='img/system_loop.png' width='50%'>
@@ -191,25 +184,17 @@
                         There are some applications of FRP: animation, graphical user interface design, robotic, and computer game programming.
                         ---
                         ## Yampa
-                        Note:
-                        That's all about FRP and next I'll talk about Yampa.
-                        ---
-                        ## Yampa
                         * FRP library
                         * Haskell
                         * Signal and Signal Function
                         * Uses signals as both behaviors and events
                         Note:
+                        That's all about FRP and next I'll talk about Yampa.
                         Yampa is a FRP library written in Haskell.
                         And Yampa consists of signals and signal functions.
                         Yampa uses its signals as behaviors and events in FRP.
                         Signal functions in Yampa are considered as behavior transformer, taking a behavior and returning another behavior.
                         The main concept of Yampa is signal function, so signals is not appear explicitly in souce code with Yampa.
-                        ---
-                        ## Motivation
-                        Note:
-                        That's all of my brief introduction of Yampa.
-                        And next, I'll talk about my motivation.
                         ---
                         ## Motivation 1
                         * "Functional Reactive Programming from First Principles"
@@ -217,33 +202,22 @@
                             * Stream based implementation
                         * Yampa
                             * Automata based implementation
+                        * Proving the correctness of Yampa
                         Note:
-                        There is another research about FRP: "Functional Reactive Programming from First Principles".
+                        That's all of my brief introduction of Yampa.
+                        And next, I'll talk about my motivation.
+                        There is a previous research about FRP: "Functional Reactive Programming from First Principles".
                         In Frist Principles, they proved the correctness of FRP implementation.
-                        But the implementation in First Principles is stream based and the implementation of Yampa is mealy automaton based.
-                        So the result of First Principles cannot be applied directly to Yampa.
-                        ---
-                        ## Motivation 2
-                        Proving the correctness of the implementation of Yampa
-                        Note:
+                        But the implementation in First Principles is stream based and the implementation of Yampa is mealy automatan based.
+                        This means that the result of First Principles cannot be applied directly to Yampa.
                         So I'm interested in the correctness of the implementation of Yampa, and tried to prove it.
                         ---
-                        ## Semantics of Yampa
+                        ## Motivation 2 TODO
                         Note:
-                        That's all about my motivation.
-                        Next I'll introduce my research.
                         ---
-                        ## Semantics of Yampa 1
+                        ## Semantics of Yampa
                         $$ S: \langle \textsf{SF a b} \rangle \rightarrow (\mathbb{R}^+ \rightarrow a) \rightarrow (\mathbb{R}^+ \rightarrow b) $$
 
-                        * $ \langle \textsf{SF a b} \rangle $ : The set of haskell expressions of type $\textsf{SF a b}$
-                        * $ \mathbb{R}^+ = \\{ x \in \mathbb{R} ~ | ~ x \geq 0 \\} $
-                            * Positive time
-                        Note:
-                        I first defined the semantic function S like this.
-                        S takes a Yampa expression, and returns a behavior transformer.
-                        ---
-                        ## Semantics of Yampa 2
                         $$\begin{eqnarray}
                         S⟦\textsf{constant c}⟧(f)(t) &=& \lfloor \textsf{c} \rfloor \\\\
                         S⟦\textsf{sf1 >>> sf2}⟧(f)(t) &=& S⟦\textsf{sf2}⟧(S⟦\textsf{sf1}⟧(f))(t) \\\\
@@ -251,40 +225,37 @@
                         S⟦\textsf{time}⟧(f)(t) &=& t \\\\
                         \end{eqnarray}$$
 
-                        $ \lfloor \textsf{e} \rfloor $: The denotation of Haskell expression $\textsf{e}$
+                        * $ \langle \textsf{SF a b} \rangle $ : The set of haskell expressions of type $\textsf{SF a b}$
+                        * $ \mathbb{R}^+ = \\{ x \in \mathbb{R} ~ | ~ x \geq 0 \\} $
+                            * Positive time
+                        * $ \lfloor \textsf{e} \rfloor $: The denotation of Haskell expression $\textsf{e}$
                         Note:
-                        According to the documentation of Yampa, I defined the semantic function S like this.
-                        ---
-                        ## Interpreter of Yampa
-                        Note:
-                        Next I'll talk about the interpreter of Yampa.
+                        That's all about my motivation.
+                        Next I'll introduce my research.
+                        I first defined the semantic function S like this according to the documentation of Yapma.
+                        S takes a Yampa expression, and returns a behavior transformer.
                         ---
                         ## Interpreter of Yampa 1
-                        * GHC and the real operating system
+                        * Using GHC and the underlaying operating system
                             * Difficult to prove the correctness
                         * Abstract interpreter
                         Note:
-                        Using GHC, a compiler for Haskell, and the real operating system is too difficult to prove the correctness.
+                        Next I'll talk about the interpreter of Yampa.
+                        Using GHC, a compiler for Haskell, and the underlaying operating system is too difficult to prove the correctness.
                         So I defined an abstract interpreter for Yampa.
                         ---
                         ## Interpreter of Yampa 2
                         $$\begin{array}{l}
                         \widetilde{S}: \langle \textsf{SF a b} \rangle \rightarrow \left[\mathbb{R}^+\right] \rightarrow [a] \rightarrow [b] \\\\
-                        \widetilde{S}⟦\textsf{sf}⟧(ts)(xs) = run(\lfloor \textsf{sf} \rfloor)(ts)(xs)
-                        \end{array}$$
-                        Note:
-                        S tilde is the interpreter to run Yampa expression in the world of mathematics.
-                        S tilde takes lists of sample times and inputs, then returns an output list.
-                        ---
-                        ## Interpreter of Yampa 3
-                        $$\begin{array}{l}
+                        \widetilde{S}⟦\textsf{sf}⟧(ts)(xs) = run(\lfloor \textsf{sf} \rfloor)(ts)(xs) \\\\\\\\
                         run: SF \ a \ b \rightarrow \left[\mathbb{R}^+\right] \rightarrow [a] \rightarrow [b] \\\\
                         run(sf)(t:[])(x:[]) = snd(sf(x)):[] \\\\
                         run(sf)(t:t':ts)(x:x':xs) = \\\\
                         ~~~~ snd(sf(x)):run(\mathit{fst}(sf(x))(t'-t))(t':ts)(x':xs)
                         \end{array}$$
                         Note:
-                        Here is the actual implementation of S tilde.
+                        S tilde is the interpreter to run Yampa expression in the world of mathematics.
+                        S tilde takes lists of sample times and inputs, then returns an output list.
                         ---
                         ## Limit of interpreter
                         <div style='font-size: 80%'>
