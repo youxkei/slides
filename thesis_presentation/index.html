@@ -196,13 +196,20 @@
                         Signal functions in Yampa are considered as behavior transformer, taking a behavior and returning another behavior.
                         The main concept of Yampa is signal function, so signals is not appear explicitly in souce code with Yampa.
                         ---
-                        ## Motivation 1
+                        ## Motivation
                         * "Functional Reactive Programming from First Principles"
                             * Correctness of FRP
                             * Stream based implementation
                         * Yampa
                             * Automata based implementation
                         * Proving the correctness of Yampa
+                            * $\textsf{time}$
+                                * Implemented by $\textsf{constant c}$, $\textsf{integral}$, and $\textsf{sf1 >>> sf2}$
+
+                        <pre><code class='haskell' data-trim>
+                        time :: SF a Time
+                        time = constant 1 >>> integral
+                        </code></pre>
                         Note:
                         That's all of my brief introduction of Yampa.
                         And next, I'll talk about my motivation.
@@ -211,11 +218,29 @@
                         But the implementation in First Principles is stream based and the implementation of Yampa is mealy automatan based.
                         This means that the result of First Principles cannot be applied directly to Yampa.
                         So I'm interested in the correctness of the implementation of Yampa, and tried to prove it.
-                        ---
-                        ## Motivation 2 TODO
-                        Note:
+                        In this research, I chose the Yampa primitive time and proved the correctness of it.
+                        The semantics of time is simple, but the implementation of time is interesting.
+                        Time is implemented by constant, integral, and composition.
+                        This is why I chose time.
+                        Due to the implementation of time, I also proved the correctness of the three Yampa primitives.
                         ---
                         ## How to show the correctness
+                        * Correspondance between semantics and interpreter
+                        * Semantics: $S$
+                        * Interpreter: $\widetilde{S}$
+                        * Limit of the interpreter: $\widetilde{S}^*$
+
+                        $$ \widetilde{S}^* = S $$
+
+                        Note:
+                        That's all about my motivation.
+                        Next, I'll talk about my research.
+                        There are several ways for showing the correctness.
+                        One way for this is giving semantics and an interpreter, and proving the correspondence between them.
+                        Semantics of a Yampa expression is the meaning of a Yampa expression.
+                        For example, semantics of Yampa expression integral can be integration in mathematics.
+                        I defined semantics as a semantic function S and an interpreter S tilde.
+                        I also defined the limit of the interpreter, S tilde star, and showed the correctness of Yampa expressions by proving this equation.
                         ---
                         ## Semantics of Yampa
                         $$ S: \langle \textsf{SF a b} \rangle \rightarrow (\mathbb{R}^+ \rightarrow a) \rightarrow (\mathbb{R}^+ \rightarrow b) $$
@@ -231,12 +256,11 @@
                         * $ \mathbb{R}^+ = \\{ x \in \mathbb{R} ~ | ~ x \geq 0 \\} $
                         * $ \lfloor \textsf{e} \rfloor $: The denotation of Haskell expression $\textsf{e}$
                         Note:
-                        That's all about my motivation.
                         Next I'll talk about the semantics of Yampa.
                         I first defined the semantic function S like this according to the documentation of Yapma.
                         S takes a Yampa expression, and returns a behavior transformer.
                         ---
-                        ## Interpreter of Yampa 1
+                        ## Interpreter of Yampa
                         * Using GHC and the underlaying operating system
                             * Difficult to prove the correctness
                         * Abstract interpreter
@@ -245,7 +269,7 @@
                         Using GHC, a compiler for Haskell, and the underlaying operating system is too difficult to prove the correctness.
                         So I defined an abstract interpreter for Yampa.
                         ---
-                        ## Interpreter of Yampa 2
+                        ## Interpreter of Yampa
                         $$\begin{array}{l}
                         \widetilde{S}: \langle \textsf{SF a b} \rangle \rightarrow \left[\mathbb{R}^+\right] \rightarrow [a] \rightarrow [b] \\\\
                         \widetilde{S}⟦\textsf{sf}⟧(ts)(xs) = run(\lfloor \textsf{sf} \rfloor)(ts)(xs) \\\\\\\\
@@ -279,7 +303,7 @@
                         ## Correctness
                         $$ \widetilde{S}^\*⟦\textsf{sf}⟧(f)(t) = S⟦\textsf{sf}⟧(f)(t) $$
                         Note:
-                        Then I showed the correctness of the four Yampa expressions by proving that its semantics is precisely equal to the limit of its interpreter.
+                        Then I showed the correctness of the four Yampa expressions by proving this equation.
                         ---
                         ## Correctness of $\textsf{constant c}$
                         ### Lemma 1
