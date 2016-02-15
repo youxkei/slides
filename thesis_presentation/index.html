@@ -215,6 +215,8 @@
                         ## Motivation 2 TODO
                         Note:
                         ---
+                        ## How to show the correctness
+                        ---
                         ## Semantics of Yampa
                         $$ S: \langle \textsf{SF a b} \rangle \rightarrow (\mathbb{R}^+ \rightarrow a) \rightarrow (\mathbb{R}^+ \rightarrow b) $$
 
@@ -227,11 +229,10 @@
 
                         * $ \langle \textsf{SF a b} \rangle $ : The set of haskell expressions of type $\textsf{SF a b}$
                         * $ \mathbb{R}^+ = \\{ x \in \mathbb{R} ~ | ~ x \geq 0 \\} $
-                            * Positive time
                         * $ \lfloor \textsf{e} \rfloor $: The denotation of Haskell expression $\textsf{e}$
                         Note:
                         That's all about my motivation.
-                        Next I'll introduce my research.
+                        Next I'll talk about the semantics of Yampa.
                         I first defined the semantic function S like this according to the documentation of Yapma.
                         S takes a Yampa expression, and returns a behavior transformer.
                         ---
@@ -272,13 +273,71 @@
                         * $\left|P\_t\right|$ is a maximum interval
                             * $\displaystyle \lim\_{\left|P\_t\right| \rightarrow 0}$: The limit as sampling interval goes to $0$
                         Note:
-                        S tilde is not an behavior transformer, and I'm interested in the limit of the interpreter as the sampling interval goes to zero.
-                        So I defined a function calculating the limit of the interpreter, called S tilde star.
+                        Since the semantic function S takes a behavior and the interpreter S tilde takes an input list with sample times, we cannot compare them directly.
+                        So I defined a function calculating the limit of the interpreter as the sampling interval goes to zero, called S tilde star.
                         ---
                         ## Correctness
-                        $$ S⟦\textsf{sf}⟧(f)(t) = \widetilde{S}^\*⟦\textsf{sf}⟧(f)(t) $$
+                        $$ \widetilde{S}^\*⟦\textsf{sf}⟧(f)(t) = S⟦\textsf{sf}⟧(f)(t) $$
                         Note:
-                        Then I proved the correctness of Yampa expression by showning that its semantics is precisely equal to the limit of its interpreter.
+                        Then I showed the correctness of the four Yampa expressions by proving that its semantics is precisely equal to the limit of its interpreter.
+                        ---
+                        ## Correctness of $\textsf{constant c}$
+                        ### Lemma 1
+                        $$ last(run(\lfloor \textsf{constant}\rfloor (c))(ts)(xs)) = c $$
+
+                        By induction on the length of $ts$ and $xs$
+                        ---
+                        ## Correctness of $\textsf{constant c}$
+                        ### Proof of Lemma 1
+                        Base case
+
+                        $$
+                        \begin{array}{l}
+                            last(run(\lfloor \textsf{constant}\rfloor (c))(t:[])(x:[])) \\\\
+                            = last(snd((\lfloor \textsf{constant} \rfloor (c))(x)):[]) \\\\
+                            = last(c:[]) \\\\
+                            = c
+                        \end{array}
+                        $$
+                        ---
+                        ## Correctness of $\textsf{constant c}$
+                        ### Proof of Lemma 1
+                        Induction Step
+
+                        <div style='font-size: 80%'>
+                            $$
+                            \begin{array}{l}
+                                last(run(\lfloor \textsf{constant}\rfloor (c))(t:t':ts)(x:x':xs)) \\\\
+                                = last(snd((\lfloor \textsf{constant} \rfloor (c))(x)): \\\\
+                                \qquad run((fst((\lfloor \textsf{constant} \rfloor (c))(x)))(t'-t))(t':ts)(x':xs)) \\\\
+                                = last(run((fst((\lfloor \textsf{constant} \rfloor (c))(x)))(t'-t))(t':ts)(x':xs)) \\\\
+                                = last(run(\lfloor \textsf{constant} \rfloor (c))(t':ts)(x':xs)) \\\\
+                                = c
+                            \end{array}
+                            $$
+                        </div>
+                        ---
+                        ## Correctness of $\textsf{constant c}$
+                        ### Theorem 1
+                        $$ \widetilde{S}^\*⟦\textsf{constant c}⟧(f)(t) = S⟦\textsf{constant c}⟧(f)(t) $$
+
+                        By Lemma 1
+                        ---
+                        ## Correctness of $\textsf{constant c}$
+                        ### Proof of Theorem 1
+                        <div style='font-size: 80%'>
+                        $$
+                        \begin{array}{l}
+                        \displaystyle \widetilde{S}^\*⟦\textsf{constant c}⟧(f)(t) \\\\
+                        \displaystyle = \lim\_{\left|P\_t\right| \rightarrow 0} last(\widetilde{S}⟦\textsf{constant c}⟧(P\_t)(map(f)(P\_t))) \\\\
+                        \displaystyle = \lim\_{\left|P\_t\right| \rightarrow 0} run(\lfloor \textsf{constant c} \rfloor)(P\_t)(map(f)(P\_t))) \\\\
+                        \displaystyle = \lim\_{\left|P\_t\right| \rightarrow 0} run(\lfloor \textsf{constant} \rfloor(\lfloor \textsf{c} \rfloor))(P\_t)(map(f)(P\_t))) \\\\
+                        \displaystyle = \lim\_{\left|P\_t\right| \rightarrow 0} \lfloor \textsf{c} \rfloor \\\\
+                        \displaystyle = \lfloor \textsf{c} \rfloor \\\\
+                        \displaystyle = S⟦\textsf{constant c}⟧(f)(t)
+                        \end{array}
+                        $$
+                        </div>
                         ---
                         ## Result
                         * Correctness
