@@ -109,18 +109,78 @@
                         ---
                         ## Example of FRP
                         <img data-src='img/system.png' width='50%'>
-                        <pre><code data-trim>
+                        <pre><code class='haskell' data-trim data-noescape>
                         a :: Double
                         a = 1.0
 
                         f :: SF Double Double
-                        f = loop $ arr (\(x, ay) -> x - ay)
-                               >>> integral
-                               >>> arr (\x -> (x, a * x))
+                        f = loop $ arr (\(x, ay) -&gt; x - ay)
+                               &gt;&gt;&gt; integral
+                               &gt;&gt;&gt; arr (\x -&gt; (x, a * x))
                         </code></pre>
 
                         Note:
                         This is an example of FRP. You can easily find the correspondence between the diagram and the program.
+                        ---
+                        ## Example of FRP
+                        <img data-src='img/system_loop.png' width='50%'>
+                        <pre><code class='haskell' data-trim data-noescape>
+                        a :: Double
+                        a = 1.0
+
+                        f :: SF Double Double
+                        f = <span style='color: red;'>loop</span> $ arr (\(x, ay) -&gt; x - ay)
+                               &gt;&gt;&gt; integral
+                               &gt;&gt;&gt; arr (\x -&gt; (x, a * x))
+                        </code></pre>
+
+                        Note:
+                        The feedback of the diagram corresponds to the loop primitive.
+                        ---
+                        ## Example of FRP
+                        <img data-src='img/system_sum.png' width='50%'>
+                        <pre><code class='haskell' data-trim data-noescape>
+                        a :: Double
+                        a = 1.0
+
+                        f :: SF Double Double
+                        f = loop $ <span style='color: red;'>arr (\(x, ay) -&gt; x - ay)</span>
+                               &gt;&gt;&gt; integral
+                               &gt;&gt;&gt; arr (\x -&gt; (x, a * x))
+                        </code></pre>
+
+                        Note:
+                        This part of the diagram corresponds to this primitive.
+                        ---
+                        ## Example of FRP
+                        <img data-src='img/system_integral.png' width='50%'>
+                        <pre><code class='haskell' data-trim data-noescape>
+                        a :: Double
+                        a = 1.0
+
+                        f :: SF Double Double
+                        f = loop $ arr (\(x, ay) -&gt; x - ay)
+                               &gt;&gt;&gt; <span style='color: red;'>integral</span>
+                               &gt;&gt;&gt; arr (\x -&gt; (x, a * x))
+                        </code></pre>
+
+                        Note:
+                        The integrator corresponds to integral primitive.
+                        ---
+                        ## Example of FRP
+                        <img data-src='img/system_fork.png' width='50%'>
+                        <pre><code class='haskell' data-trim data-noescape>
+                        a :: Double
+                        a = 1.0
+
+                        f :: SF Double Double
+                        f = loop $ arr (\(x, ay) -&gt; x - ay)
+                               &gt;&gt;&gt; integral
+                               &gt;&gt;&gt; <span style='color: red;'>arr (\x -&gt; (x, a * x))</span>
+                        </code></pre>
+
+                        Note:
+                        And this part corresponds to this primitive.
                         ---
                         ## Application of FRP
                         * Animation
