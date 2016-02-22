@@ -1,0 +1,578 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+
+        <title>D言語で構造をいい感じにテストしたい</title>
+
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/night.css" id="theme">
+
+        <!-- Code syntax highlighting -->
+        <link rel="stylesheet" href="lib/css/zenburn.css">
+
+        <!--[if lt IE 9]>
+            <script src="lib/js/html5shiv.js"></script>
+        <![endif]-->
+
+        <!-- fork me on github -->
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.1.1/gh-fork-ribbon.min.css" />
+
+        <style rel="stylesheet">
+            .reveal .progress {
+                height: 12px !important;
+            }
+            .reveal .slide-number {
+                font-size: 32px !important;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="reveal">
+            <div class="slides">
+                <section data-markdown data-separator="^---">
+                    <script type="text/template">
+                        # D言語で構造を
+                        # いい感じに
+                        # テストしたい
+
+                        --- ## 自己紹介
+                        * Twitter: [@youxkei](https://twitter.com/youxkei)
+                        * Github: [youxkei](https://github.com/youxkei)
+                        * 最近やってること
+                            * ロジバン
+                            * 東方紺珠伝LunaticRTA (39:15)
+                            * DQB
+
+                        --- ## 普通のテスト
+
+                        --- ## 普通のテスト
+                        <pre><code class='c' data-trim>
+                        Token[] lex(string src){ ... } // 字句解析器
+
+                        unittest
+                        {
+                            Token[] tokens = lex("int");
+                            assert(tokens.length == 1);
+                            assert(tokens[0].tokenType == TokenType.IDENTIFIER);
+                            assert(tokens[0].stringValue == "int");
+                            assert(tokens[0].keyword == Keyword.INT);
+                            assert(tokens[0].line == 1);
+                        }
+                        </code></pre>
+
+                        --- ## まあ大丈夫だけど
+
+                        --- ## DRY的に・・・
+                        <pre><code class='c' data-trim data-noescape>
+                        Token[] lex(string src){ ... } // 字句解析器
+
+                        unittest
+                        {
+                            Token[] tokens = lex("int");
+                            assert(tokens.length == 1);
+                            assert(tokens[0].tokenType == TokenType.IDENTIFIER);
+                            assert(tokens[0].stringValue == "int");
+                            assert(tokens[0].keyword == Keyword.INT);
+                            assert(tokens[0].line == 1);
+                        }
+                        </code></pre>
+
+                        --- ## 重複が気になる
+                        <pre><code class='c' data-trim data-noescape>
+                        Token[] lex(string src){ ... } // 字句解析器
+
+                        unittest
+                        {
+                            Token[] tokens = lex("int");
+                            <span style="color: red">assert(tokens</span>.length == 1);
+                            <span style="color: red">assert(tokens[0]</span>.tokenType == TokenType.IDENTIFIER);
+                            <span style="color: red">assert(tokens[0]</span>.stringValue == "int");
+                            <span style="color: red">assert(tokens[0]</span>.keyword == Keyword.INT);
+                            <span style="color: red">assert(tokens[0]</span>.line == 1);
+                        }
+                        </code></pre>
+
+                        --- ## 少し長いテスト
+
+                        --- ## 少し長いテスト
+                        <pre style="font-size: small"><code class='c' data-trim>
+                        unittest
+                        {
+                            Token[] tokens = lex("int i = 42");
+                            assert(tokens.length == 4);
+                            assert(tokens[0].tokenType == TokenType.IDENTIFIER);
+                            assert(tokens[0].stringValue == "int");
+                            assert(tokens[0].keyword == Keyword.INT);
+                            assert(tokens[0].line == 1);
+                            assert(tokens[1].tokenType == TokenType.IDENTIFIER);
+                            assert(tokens[1].stringValue == "i");
+                            assert(tokens[1].keyword == Keyword.NOT_KEYWORD);
+                            assert(tokens[1].line == 1);
+                            assert(tokens[2].tokenType == TokenType.OPERATOR);
+                            assert(tokens[2].operator == Operator.EQUAL);
+                            assert(tokens[2].line == 1);
+                            assert(tokens[3].tokenType == TokenType.INTEGER_LITERAL);
+                            assert(tokens[3].integerValue == 42);
+                            assert(tokens[3].line == 1);
+                        }
+                        </code></pre>
+
+                        --- ## やっぱり重複が気になる
+                        <pre style="font-size: small"><code class='c' data-trim data-noescape>
+                        unittest
+                        {
+                            Token[] tokens = lex("int i = 42");
+                            <span style="color: red">assert(tokens</span>.length == 4);
+                            <span style="color: red">assert(tokens[0]</span>.tokenType == TokenType.IDENTIFIER);
+                            <span style="color: red">assert(tokens[0]</span>.stringValue == "int");
+                            <span style="color: red">assert(tokens[0]</span>.keyword == Keyword.INT);
+                            <span style="color: red">assert(tokens[0]</span>.line == 1);
+                            <span style="color: red">assert(tokens[1]</span>.tokenType == TokenType.IDENTIFIER);
+                            <span style="color: red">assert(tokens[1]</span>.stringValue == "i");
+                            <span style="color: red">assert(tokens[1]</span>.keyword == Keyword.NOT_KEYWORD);
+                            <span style="color: red">assert(tokens[1]</span>.line == 1);
+                            <span style="color: red">assert(tokens[2]</span>.tokenType == TokenType.OPERATOR);
+                            <span style="color: red">assert(tokens[2]</span>.operator == Operator.EQUAL);
+                            <span style="color: red">assert(tokens[2]</span>.line == 1);
+                            <span style="color: red">assert(tokens[3]</span>.tokenType == TokenType.INTEGER_LITERAL);
+                            <span style="color: red">assert(tokens[3]</span>.integerValue == 42);
+                            <span style="color: red">assert(tokens[3]</span>.line == 1);
+                        }
+                        </code></pre>
+
+                        --- ## constを追加してみる
+
+                        --- ## 変更前
+                        <pre style="font-size: small"><code class='c' data-trim>
+                        unittest
+                        {
+                            Token[] tokens = lex("int i = 42");
+                            assert(tokens.length == 4);
+                            assert(tokens[0].tokenType == TokenType.IDENTIFIER);
+                            assert(tokens[0].stringValue == "int");
+                            assert(tokens[0].keyword == Keyword.INT);
+                            assert(tokens[0].line == 1);
+                            assert(tokens[1].tokenType == TokenType.IDENTIFIER);
+                            assert(tokens[1].stringValue == "i");
+                            assert(tokens[1].keyword == Keyword.NOT_KEYWORD);
+                            assert(tokens[1].line == 1);
+                            assert(tokens[2].tokenType == TokenType.OPERATOR);
+                            assert(tokens[2].operator == Operator.EQUAL);
+                            assert(tokens[2].line == 1);
+                            assert(tokens[3].tokenType == TokenType.INTEGER_LITERAL);
+                            assert(tokens[3].integerValue == 42);
+                            assert(tokens[3].line == 1);
+                        }
+                        </code></pre>
+
+                        --- ## ソースコードにconstを追加
+                        <pre style="font-size: small"><code class='c' data-trim>
+                        unittest
+                        {
+                            Token[] tokens = lex("const int i = 42");
+                            assert(tokens.length == 4);
+                            assert(tokens[0].tokenType == TokenType.IDENTIFIER);
+                            assert(tokens[0].stringValue == "int");
+                            assert(tokens[0].keyword == Keyword.INT);
+                            assert(tokens[0].line == 1);
+                            assert(tokens[1].tokenType == TokenType.IDENTIFIER);
+                            assert(tokens[1].stringValue == "i");
+                            assert(tokens[1].keyword == Keyword.NOT_KEYWORD);
+                            assert(tokens[1].line == 1);
+                            assert(tokens[2].tokenType == TokenType.OPERATOR);
+                            assert(tokens[2].operator == Operator.EQUAL);
+                            assert(tokens[2].line == 1);
+                            assert(tokens[3].tokenType == TokenType.INTEGER_LITERAL);
+                            assert(tokens[3].integerValue == 42);
+                            assert(tokens[3].line == 1);
+                        }
+                        </code></pre>
+
+                        --- ## 長さが増える
+                        <pre style="font-size: small"><code class='c' data-trim>
+                        unittest
+                        {
+                            Token[] tokens = lex("const int i = 42");
+                            assert(tokens.length == 5);
+                            assert(tokens[0].tokenType == TokenType.IDENTIFIER);
+                            assert(tokens[0].stringValue == "int");
+                            assert(tokens[0].keyword == Keyword.INT);
+                            assert(tokens[0].line == 1);
+                            assert(tokens[1].tokenType == TokenType.IDENTIFIER);
+                            assert(tokens[1].stringValue == "i");
+                            assert(tokens[1].keyword == Keyword.NOT_KEYWORD);
+                            assert(tokens[1].line == 1);
+                            assert(tokens[2].tokenType == TokenType.OPERATOR);
+                            assert(tokens[2].operator == Operator.EQUAL);
+                            assert(tokens[2].line == 1);
+                            assert(tokens[3].tokenType == TokenType.INTEGER_LITERAL);
+                            assert(tokens[3].integerValue == 42);
+                            assert(tokens[3].line == 1);
+                        }
+                        </code></pre>
+
+                        --- ## constトークンのテストを追加
+                        <pre style="font-size: small"><code class='c' data-trim>
+                        unittest
+                        {
+                            Token[] tokens = lex("const int i = 42");
+                            assert(tokens.length == 5);
+                            assert(tokens[0].tokenType == TokenType.IDENTIFIER);
+                            assert(tokens[0].stringValue == "const");
+                            assert(tokens[0].keyword == Keyword.CONST);
+                            assert(tokens[0].line == 1);
+                            assert(tokens[0].tokenType == TokenType.IDENTIFIER);
+                            assert(tokens[0].stringValue == "int");
+                            assert(tokens[0].keyword == Keyword.INT);
+                            assert(tokens[0].line == 1);
+                            assert(tokens[1].tokenType == TokenType.IDENTIFIER);
+                            assert(tokens[1].stringValue == "i");
+                            assert(tokens[1].keyword == Keyword.NOT_KEYWORD);
+                            assert(tokens[1].line == 1);
+                            assert(tokens[2].tokenType == TokenType.OPERATOR);
+                            assert(tokens[2].operator == Operator.EQUAL);
+                            assert(tokens[2].line == 1);
+                            assert(tokens[3].tokenType == TokenType.INTEGER_LITERAL);
+                            assert(tokens[3].integerValue == 42);
+                            assert(tokens[3].line == 1);
+                        }
+                        </code></pre>
+
+                        --- ## tokensのインデックスを調整する
+                        <pre style="font-size: small"><code class='c' data-trim>
+                        unittest
+                        {
+                            Token[] tokens = lex("const int i = 42");
+                            assert(tokens.length == 5);
+                            assert(tokens[0].tokenType == TokenType.IDENTIFIER);
+                            assert(tokens[0].stringValue == "const");
+                            assert(tokens[0].keyword == Keyword.CONST);
+                            assert(tokens[0].line == 1);
+                            assert(tokens[1].tokenType == TokenType.IDENTIFIER);
+                            assert(tokens[1].stringValue == "int");
+                            assert(tokens[1].keyword == Keyword.INT);
+                            assert(tokens[1].line == 1);
+                            assert(tokens[2].tokenType == TokenType.IDENTIFIER);
+                            assert(tokens[2].stringValue == "i");
+                            assert(tokens[2].keyword == Keyword.NOT_KEYWORD);
+                            assert(tokens[2].line == 1);
+                            assert(tokens[3].tokenType == TokenType.OPERATOR);
+                            assert(tokens[3].operator == Operator.EQUAL);
+                            assert(tokens[3].line == 1);
+                            assert(tokens[4].tokenType == TokenType.INTEGER_LITERAL);
+                            assert(tokens[4].integerValue == 42);
+                            assert(tokens[4].line == 1);
+                        }
+                        </code></pre>
+
+                        --- ## 面倒くさい！！！
+                        特にインデックス調整が
+
+                        --- ## というわけで
+
+                        --- ## assert_that
+                        https://github.com/youxkei/assert_that
+                        <img src='img/assert_that.png'>
+
+                        --- ## assert_thatを使うと
+
+                        --- ## これが
+                        <pre style="font-size: small"><code class='c' data-trim>
+                        unittest
+                        {
+                            Token[] tokens = lex("int i = 42");
+                            assert(tokens.length == 4);
+                            assert(tokens[0].tokenType == TokenType.IDENTIFIER);
+                            assert(tokens[0].stringValue == "int");
+                            assert(tokens[0].keyword == Keyword.INT);
+                            assert(tokens[0].line == 1);
+                            assert(tokens[1].tokenType == TokenType.IDENTIFIER);
+                            assert(tokens[1].stringValue == "i");
+                            assert(tokens[1].keyword == Keyword.NOT_KEYWORD);
+                            assert(tokens[1].line == 1);
+                            assert(tokens[2].tokenType == TokenType.OPERATOR);
+                            assert(tokens[2].operator == Operator.EQUAL);
+                            assert(tokens[2].line == 1);
+                            assert(tokens[3].tokenType == TokenType.INTEGER_LITERAL);
+                            assert(tokens[3].integerValue == 42);
+                            assert(tokens[3].line == 1);
+                        }
+                        </code></pre>
+
+                        --- ## こうなる！！！
+                        <pre style="font-size: small"><code class='c' data-trim>
+                        unittest
+                        {
+                            Token[] tokens = lex("int i = 42");
+                            mixin assertThat(q{tokens}, arr!(ay!(
+                                all!(
+                                    field!("tokenType", eq!(TokenType.IDENTIFIER)),
+                                    field!("stringValue", eq!"int"),
+                                    field!("keyword", eq!(Keyword.INT)),
+                                    field!("line", eq!1),
+                                ),
+                                all!(
+                                    field!("tokenType", eq!(TokenType.IDENTIFIER)),
+                                    field!("stringValue", eq!"i"),
+                                    field!("keyword", eq!(Keyword.NOT_KEYWORD)),
+                                    field!("line", eq!1),
+                                ),
+                                all!(
+                                    field!("tokenType", eq!(TokenType.OPERATOR)),
+                                    field!("operator", eq!(Keyword.EQUAL)),
+                                    field!("line", eq!1),
+                                ),
+                                all!(
+                                    field!("tokenType", eq!(TokenType.INTEGER_LITERAL)),
+                                    field!("integerValue", eq!42),
+                                    field!("line", eq!1),
+                                ),
+                            )));
+                        }
+                        </code></pre>
+
+                        --- ## constを追加してみる
+
+                        --- ## 変更前
+                        <pre style="font-size: small"><code class='c' data-trim>
+                        unittest
+                        {
+                            Token[] tokens = lex("int i = 42");
+                            mixin assertThat(q{tokens}, arr!(ay!(
+                                all!(
+                                    field!("tokenType", eq!(TokenType.IDENTIFIER)),
+                                    field!("stringValue", eq!"int"),
+                                    field!("keyword", eq!(Keyword.INT)),
+                                    field!("line", eq!1),
+                                ),
+                                all!(
+                                    field!("tokenType", eq!(TokenType.IDENTIFIER)),
+                                    field!("stringValue", eq!"i"),
+                                    field!("keyword", eq!(Keyword.NOT_KEYWORD)),
+                                    field!("line", eq!1),
+                                ),
+                                all!(
+                                    field!("tokenType", eq!(TokenType.OPERATOR)),
+                                    field!("operator", eq!(Keyword.EQUAL)),
+                                    field!("line", eq!1),
+                                ),
+                                all!(
+                                    field!("tokenType", eq!(TokenType.INTEGER_LITERAL)),
+                                    field!("integerValue", eq!42),
+                                    field!("line", eq!1),
+                                ),
+                            )));
+                        }
+                        </code></pre>
+
+                        --- ## ソースコードにconstを追加
+                        <pre style="font-size: small"><code class='c' data-trim>
+                        unittest
+                        {
+                            Token[] tokens = lex("const int i = 42");
+                            mixin assertThat(q{tokens}, arr!(ay!(
+                                all!(
+                                    field!("tokenType", eq!(TokenType.IDENTIFIER)),
+                                    field!("stringValue", eq!"int"),
+                                    field!("keyword", eq!(Keyword.INT)),
+                                    field!("line", eq!1),
+                                ),
+                                all!(
+                                    field!("tokenType", eq!(TokenType.IDENTIFIER)),
+                                    field!("stringValue", eq!"i"),
+                                    field!("keyword", eq!(Keyword.NOT_KEYWORD)),
+                                    field!("line", eq!1),
+                                ),
+                                all!(
+                                    field!("tokenType", eq!(TokenType.OPERATOR)),
+                                    field!("operator", eq!(Keyword.EQUAL)),
+                                    field!("line", eq!1),
+                                ),
+                                all!(
+                                    field!("tokenType", eq!(TokenType.INTEGER_LITERAL)),
+                                    field!("integerValue", eq!42),
+                                    field!("line", eq!1),
+                                ),
+                            )));
+                        }
+                        </code></pre>
+
+                        --- ## constトークンのテストを追加
+                        <pre style="font-size: x-small"><code class='c' data-trim>
+                        unittest
+                        {
+                            Token[] tokens = lex("const int i = 42");
+                            mixin assertThat(q{tokens}, arr!(ay!(
+                                all!(
+                                    field!("tokenType", eq!(TokenType.IDENTIFIER)),
+                                    field!("stringValue", eq!"const"),
+                                    field!("keyword", eq!(Keyword.CONST)),
+                                    field!("line", eq!1),
+                                ),
+                                all!(
+                                    field!("tokenType", eq!(TokenType.IDENTIFIER)),
+                                    field!("stringValue", eq!"int"),
+                                    field!("keyword", eq!(Keyword.INT)),
+                                    field!("line", eq!1),
+                                ),
+                                all!(
+                                    field!("tokenType", eq!(TokenType.IDENTIFIER)),
+                                    field!("stringValue", eq!"i"),
+                                    field!("keyword", eq!(Keyword.NOT_KEYWORD)),
+                                    field!("line", eq!1),
+                                ),
+                                all!(
+                                    field!("tokenType", eq!(TokenType.OPERATOR)),
+                                    field!("operator", eq!(Keyword.EQUAL)),
+                                    field!("line", eq!1),
+                                ),
+                                all!(
+                                    field!("tokenType", eq!(TokenType.INTEGER_LITERAL)),
+                                    field!("integerValue", eq!42),
+                                    field!("line", eq!1),
+                                ),
+                            )));
+                        }
+                        </code></pre>
+
+                        --- ## これだけ！
+
+                        --- ## やったぜ！！！
+
+                        --- ## さらに
+
+                        --- ## 行数の表示
+                        <pre><code class='d' data-trim>
+                        module test;
+
+                        import assert_that;
+
+                        unittest
+                        {
+                            int[] ary = [2, 2, 2, 5];
+
+                            mixin assertThat!(q{ary}, arr!(ay!( // 9行目
+                                eq!2,
+                                eq!2,
+                                eq!4, // 12行目
+                                eq!5,
+                            )));
+                        }
+
+                        void main(){}
+                        </code></pre>
+                        <pre><code class='bash' data-trim>
+                        $ rdmd -unittest test.d
+                        core.exception.AssertError@test.d(9):
+                        test.d(12): ary[2]: actual 2: expected == 4
+                        </code></pre>
+
+                        --- ## == 以外も扱える
+                        <pre><code class='d' data-trim>
+                        module test;
+
+                        import assert_that;
+
+                        unittest
+                        {
+                            int[] ary = [2, 2, 4, 5];
+
+                            mixin assertThat!(q{array}, arr!(ay!( // 9行目
+                                op!(">", 1),
+                                op!(">", 2), // 11行目
+                                op!(">", 3),
+                                op!(">", 4),
+                            )));
+                        }
+
+                        void main(){}
+                        </code></pre>
+                        <pre><code class='bash' data-trim>
+                        $ rdmd -unittest test.d
+                        core.exception.AssertError@test.d(9):
+                        test.d(11): ary[1]: actual 2: expected > 2
+                        </code></pre>
+
+                        --- ## 複数の失敗を表示
+                        <pre><code class='d' data-trim>
+                        module test;
+
+                        import assert_that;
+
+                        unittest
+                        {
+                            int[] ary = [2, 2, 2, 5];
+
+                            mixin assertThat!(q{array}, arr!(ay!( // 9行目
+                                op!(">", 1),
+                                op!(">", 2), // 11行目
+                                op!(">", 3), // 12行目
+                                op!(">", 4),
+                            )));
+                        }
+
+                        void main(){}
+                        </code></pre>
+                        <pre><code class='bash' data-trim>
+                        $ rdmd -unittest test.d
+                        core.exception.AssertError@test.d(9):
+                        test.d(11): ary[1]: actual 2: expected > 2
+                        test.d(12): ary[2]: actual 2: expected > 3
+                        </code></pre>
+
+                        --- ## 最後に
+                        https://github.com/youxkei/assert_that
+                        <img src='img/assert_that.png'>
+                    </script>
+                </section>
+                <p style="display: block; position: absolute; bottom: 0px; font-family: monospace"><a href="https://git.io/v2tri">git.io/v2tri</a></p>
+            </div>
+        </div>
+
+        <div class="github-fork-ribbon-wrapper right">
+            <div style="background-color: #090" class="github-fork-ribbon">
+                <a href="https://github.com/youxkei/slides/tree/gh-pages/assert_that">Fork me on GitHub</a>
+            </div>
+        </div>
+
+        <script src="lib/js/head.min.js"></script>
+        <script src="js/reveal.js"></script>
+
+        <script>
+            Reveal.initialize({
+                controls: false,
+                progress: true,
+                history: true,
+                center: true,
+                slideNumber: 'c/t',
+                margin: 0.02,
+                minScale: 0,
+                maxScale: 1024,
+
+                transition: 'none', // none/fade/slide/convex/concave/zoom
+
+                math: {
+                    mathjax: 'https://cdn.mathjax.org/mathjax/latest/MathJax.js',
+                    config: 'TeX-AMS_HTML-full'  // See http://docs.mathjax.org/en/latest/config-files.html
+                },
+
+                dependencies: [
+                    { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                    { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                    { src: 'plugin/zoom-js/zoom.js', async: true },
+                    { src: 'plugin/notes/notes.js', async: true },
+                    { src: 'plugin/math/math.js', async: true },
+                ]
+            });
+        </script>
+    </body>
+</html>
